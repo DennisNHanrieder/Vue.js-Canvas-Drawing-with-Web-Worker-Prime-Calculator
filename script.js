@@ -10,8 +10,58 @@
 
 Vue.createApp({
     data() {
-        return {
-		    message: "Hello World & HYP3!",
-        }
+        return {}
+	},
+
+	methods: {
+
+	    startDraw(){
+	        const r = Math.floor(Math.random()*255)
+	        const g = Math.floor(Math.random()*255)
+	        const b = Math.floor(Math.random()*255)
+
+	        this.ctx.fillStyle = this.ctx.strokeStyle = rgb(${r}, ${g}, ${b});
+
+	        this.drawing = true;
+	    },
+
+	    stopDraw(){
+	        this.drawing = false;
+	    },
+
+	    doDraw(e){
+	        if(this.drawing){
+                this.ctx.beginPath();
+                this.ctx.arc(
+                    e.clientX-this.$refs.drawCanvas.offsetLeft,
+                    e.clientY-this.$refs.drawCanvas.offsetTop,
+                    5, 0, 2*Math.PI
+                )
+                this.ctx.fill();
+	        }
+	    },
+
+	    startPrimes(){
+	        this.worker.postMessage("start");
+	    },
+
+	    workerResponse(e){
+	        this.$refs.primes.innerHTML = e.data;
+	    },
+	},
+
+	mounted(){
+	    this.ctx = this.$refs.drawCanvas.getContext('2d');
+	    const img = document.createElement('img');
+
+	    img.onload = () =>{
+	        this.ctx.drawImage(img, 0, 0, 400, 300);
+	    }
+	    img.src = "fhlogo.png";
+
+	    this.drawing = false;
+
+	    this.worker = new Worker("primeWorker.js");
+	    this.worker.onmessage = this.workerResponse;
 	},
 }).mount('#app');

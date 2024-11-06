@@ -2,23 +2,30 @@
 <html>
 
 <head>
-<meta charset="utf-8">
-<title>HYP3 Vue Template</title>
-<script src="lib/vue.global.js"></script>
+    <meta charset="utf-8">
+    <title>HYP3 Canvas & Webworker Example</title>
+    <script src="lib/vue.global.js"></script>
+    <script src="script.js" defer></script>
+
 </head>
 
 <body>
 <h1>HYP3 Vue Template</h1>
 
 <div id="app">
-<p><input v-model="message"></p>
-<p>{{ message }}</p>
+    <canvas width = "400" height = "300" style = "border:solid black 2px" ref = "drawCanvas"
+            @mousedown ="startDraw"
+            @mouseup ="stopDraw"
+            @mousemove = "doDraw"
+            @mouseleave = "stopDraw">
+    </canvas><br><br>
+    <button @click="startPrimes">Start</button>
+    <span ref="primes"></span>
 </div>
 
 <hr>
 <p style="font-size:small">
-Hypermedia Systems & Architecture (<a href="http://www.fh-ooe.at/mtd">MTD</a>)<br>
+    Hypermedia Systems & Architecture (<a href="http://www.fh-ooe.at/mtd">MTD</a>)<br>
 </p>
-<script src="script.js"></script>
 </body>
 </html>
