@@ -12,6 +12,7 @@ Vue.createApp({
         return {
             drawing: false,
             paused: false,
+            warningVisible: false,
         };
     },
 
@@ -51,17 +52,26 @@ Vue.createApp({
             } else {
                 this.worker.postMessage("start");
             }
+
+            this.warningVisible = true;
+
+
+
         },
 
         pausePrimes() {
-            // Pause prime generation
             this.paused = true;
             this.worker.postMessage("pause");
         },
 
         workerResponse(e) {
 
-            this.$refs.primes.innerHTML = e.data;
+            if (e.data.paused) {
+                this.$refs.primes.innerHTML = `Paused at: ${e.data.n}, Primes found: ${e.data.primeCount}`;
+            } else {
+
+                this.$refs.primes.innerHTML = e.data;
+            }
         },
     },
 

@@ -13,6 +13,10 @@
 <h1>HYP3 Vue Template</h1>
 
 <div id="app">
+    <p style="color: red; font-weight: bold;" v-if="warningVisible">
+        Warning, very slow!
+    </p>
+
     <canvas width="400" height="300" style="border:solid black 2px" ref="drawCanvas"
             @mousedown="startDraw"
             @mouseup="stopDraw"
@@ -24,7 +28,6 @@
     <button @click="pausePrimes">Pause</button>
     <span ref="primes"></span>
 </div>
-
 
 <hr>
 <p style="font-size:small">
