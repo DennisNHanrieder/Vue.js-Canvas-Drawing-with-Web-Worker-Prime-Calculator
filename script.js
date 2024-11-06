@@ -7,61 +7,65 @@
  *
  */
 
-
 Vue.createApp({
     data() {
-        return {}
-	},
+        return {
+            drawing: false,
+        };
+    },
 
-	methods: {
+    methods: {
+        startDraw() {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
 
-	    startDraw(){
-	        const r = Math.floor(Math.random()*255)
-	        const g = Math.floor(Math.random()*255)
-	        const b = Math.floor(Math.random()*255)
+            this.ctx.fillStyle = this.ctx.strokeStyle = `rgb(${r}, ${g}, ${b})`;
 
-	        this.ctx.fillStyle = this.ctx.strokeStyle = rgb(${r}, ${g}, ${b});
+            this.drawing = true;
+        },
 
-	        this.drawing = true;
-	    },
+        stopDraw() {
+            this.drawing = false;
+        },
 
-	    stopDraw(){
-	        this.drawing = false;
-	    },
-
-	    doDraw(e){
-	        if(this.drawing){
+        doDraw(e) {
+            if (this.drawing) {
                 this.ctx.beginPath();
                 this.ctx.arc(
-                    e.clientX-this.$refs.drawCanvas.offsetLeft,
-                    e.clientY-this.$refs.drawCanvas.offsetTop,
-                    5, 0, 2*Math.PI
-                )
+                    e.clientX - this.$refs.drawCanvas.offsetLeft,
+                    e.clientY - this.$refs.drawCanvas.offsetTop,
+                    5,
+                    0,
+                    2 * Math.PI
+                );
                 this.ctx.fill();
-	        }
-	    },
+            }
+        },
 
-	    startPrimes(){
-	        this.worker.postMessage("start");
-	    },
+        startPrimes() {
+            // Send a message to the worker to start calculating primes
+            this.worker.postMessage("start");
+        },
 
-	    workerResponse(e){
-	        this.$refs.primes.innerHTML = e.data;
-	    },
-	},
+        workerResponse(e) {
+            // Show the current prime number (replace content with the latest prime)
+            this.$refs.primes.innerHTML = e.data;
+        },
+    },
 
-	mounted(){
-	    this.ctx = this.$refs.drawCanvas.getContext('2d');
-	    const img = document.createElement('img');
+    mounted() {
+        this.ctx = this.$refs.drawCanvas.getContext("2d");
 
-	    img.onload = () =>{
-	        this.ctx.drawImage(img, 0, 0, 400, 300);
-	    }
-	    img.src = "fhlogo.png";
+        // Load and draw the logo image
+        const img = document.createElement("img");
 
-	    this.drawing = false;
+        img.onload = () => {
+            this.ctx.drawImage(img, 0, 0, 400, 300);
+        };
+        img.src = "fhlogo.png"; // Make sure this image is in the correct location
 
-	    this.worker = new Worker("primeWorker.js");
-	    this.worker.onmessage = this.workerResponse;
-	},
-}).mount('#app');
+        this.worker = new Worker("primeWorker.js");
+        this.worker.onmessage = this.workerResponse; // Set up worker response handler
+    },
+}).mount("#app");
