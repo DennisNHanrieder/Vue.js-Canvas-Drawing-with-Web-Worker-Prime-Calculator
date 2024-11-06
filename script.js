@@ -11,6 +11,7 @@ Vue.createApp({
     data() {
         return {
             drawing: false,
+            paused: false,   // Flag to track if the worker is paused
         };
     },
 
@@ -44,8 +45,19 @@ Vue.createApp({
         },
 
         startPrimes() {
-            // Send a message to the worker to start calculating primes
-            this.worker.postMessage("start");
+            // Start generating primes in the worker
+            if (this.paused) {
+                this.paused = false;  // Reset paused state
+                this.worker.postMessage("resume");
+            } else {
+                this.worker.postMessage("start");
+            }
+        },
+
+        pausePrimes() {
+            // Pause prime generation
+            this.paused = true;
+            this.worker.postMessage("pause");
         },
 
         workerResponse(e) {
