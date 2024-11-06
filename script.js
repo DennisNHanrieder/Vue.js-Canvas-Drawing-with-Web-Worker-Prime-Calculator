@@ -11,7 +11,7 @@ Vue.createApp({
     data() {
         return {
             drawing: false,
-            paused: false,   // Flag to track if the worker is paused
+            paused: false,
         };
     },
 
@@ -45,9 +45,8 @@ Vue.createApp({
         },
 
         startPrimes() {
-            // Start generating primes in the worker
             if (this.paused) {
-                this.paused = false;  // Reset paused state
+                this.paused = false;
                 this.worker.postMessage("resume");
             } else {
                 this.worker.postMessage("start");
@@ -61,7 +60,7 @@ Vue.createApp({
         },
 
         workerResponse(e) {
-            // Show the current prime number (replace content with the latest prime)
+
             this.$refs.primes.innerHTML = e.data;
         },
     },
@@ -69,15 +68,14 @@ Vue.createApp({
     mounted() {
         this.ctx = this.$refs.drawCanvas.getContext("2d");
 
-        // Load and draw the logo image
         const img = document.createElement("img");
 
         img.onload = () => {
             this.ctx.drawImage(img, 0, 0, 400, 300);
         };
-        img.src = "fhlogo.png"; // Make sure this image is in the correct location
+        img.src = "fhlogo.png";
 
         this.worker = new Worker("primeWorker.js");
-        this.worker.onmessage = this.workerResponse; // Set up worker response handler
+        this.worker.onmessage = this.workerResponse;
     },
 }).mount("#app");
